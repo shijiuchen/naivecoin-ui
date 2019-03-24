@@ -7,10 +7,9 @@
       您的余额: <h5>{{ balance }}</h5>
     </div>
     <br>
-    <h5>发送货币</h5>
     <form>
+      <h5>发送货币</h5>
       <div class="row">
-
         <div class="col form-group">
           <label for="receiverAddress">接收者地址</label>
           <input v-model="receiverAddress" class="form-control" type="text" placeholder="04f72a4541275aeb4344a8b04..."
@@ -28,8 +27,10 @@
       <div class="">
         <button v-on:click="sendTransaction" class="btn  btn-lg btn-primary">发送</button>
       </div>
-      <div class="row">
+      <br><br>
 
+      <h5>部署任务</h5>
+      <div class="row">
         <div class="col form-group ">
           <label for="IPadd">IP地址</label>
           <input v-model="IPadd" class="form-control" type="text" placeholder="部署者IP" id="IPadd">
@@ -43,15 +44,53 @@
           <input v-model="dockerAdd" class="form-control" type="text" placeholder="docker地址" id="dockerAdd">
         </div>
       </div>
+      <div class="">
+        <button v-on:click="deployTask" class="btn btn-lg btn-primary">部署任务</button>
+      </div>
+      <br><br>
+
+      <h5>发布任务</h5>
+      <div class="row">
+
+        <div class="col form-group ">
+          <label for="IPaddrun">IP地址</label>
+          <input v-model="IPaddrun" class="form-control" type="text" placeholder="任务发布者IP" id="IPaddrun">
+        </div>
+        <div class="col form-group ">
+          <label for="TaskNamerun">任务名</label>
+          <input v-model="TaskNamerun" class="form-control" type="text" placeholder="任务名" id="TaskNamerun">
+        </div>
+        <div class="col form-group ">
+          <label for="params">任务执行参数</label>
+          <input v-model="params" class="form-control" type="text" placeholder="所需参数" id="params">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col form-group ">
+          <label for="CPU">预计CPU</label>
+          <input v-model="CPU" class="form-control" type="text" placeholder="CPU" id="CPU">
+        </div>
+        <div class="col form-group ">
+          <label for="MEM">预计MEM</label>
+          <input v-model="MEM" class="form-control" type="text" placeholder="MEM" id="MEM">
+        </div>
+        <div class="col form-group ">
+          <label for="Time">预计Time</label>
+          <input v-model="Time" class="form-control" type="text" placeholder="Time" id="Time">
+        </div>
+      </div>
 
       <div class="">
-        <button v-on:click="deployTask" class="btn btn-lg btn-primary">部署应用</button>
+        <button v-on:click="schedulerTask" class="btn btn-lg btn-primary">发布任务</button>
       </div>
+
         <!--<div class="col">-->
           <!--<button v-on:click="generateInteraction" class="btn btn-block btn-lg btn-primary">interaction</button>-->
         <!--</div>-->
 
     </form>
+    <br><br>
 
     <h5>可执行计算任务列表</h5>
     <table class="table table-hover table-striped">
@@ -87,10 +126,21 @@
         <td>www.hadoop.com</td>
         <td> 需要进行统计的txt文件</td>
       </tr>
+
       </tbody>
     </table>
 
     <br>
+
+    <h5>任务执行情况记录</h5>
+    <div v-if="preMoney.length != 0 ">估算执行任务钱数:{{preMoney}}</div>
+    <div v-if="preMoney.length === 0 "><span>暂无任务进行花费估算......</span></div>
+    <br>
+    <div v-if="taskResult.length != 0 ">执行任务{{TaskNamerun}}的返回结果为：<br>{{taskResult}}</div>
+    <div v-if="taskResult.length === 0 "><span>暂无任务结果返回......</span></div>
+    <br>
+    <br>
+
 
     <h5>交易池</h5>
     <div class="" v-for="tx in transactionPool">
@@ -141,7 +191,15 @@
         'TaskName': null,
         'dockerAdd':null,
         'tasks': [],
-        'isLOCK': null
+        'isLOCK': null,
+        'IPaddrun': null,
+        'TaskNamerun': null,
+        'params': null,
+        'CPU': null,
+        'MEM': null,
+        'Time': null,
+        'preMoney': "",
+        'taskResult': ""
       }
     },
     created() {
@@ -156,8 +214,9 @@
         this.getAddress();
         this.getBalance();
         this.getTransactionPool();
-        this.getInteractionPool();
         this.getAlltasks();
+        this.getpreMoney();
+        this.getResult();
       },
       getAddress: function () {
         this.$http.get('/api/address')
@@ -183,8 +242,19 @@
       deployTask: function () {
         // console.log(this.name);
         // agent.deployTask(req.body.address, req.body.taskName, req.body.dockerAdd);
-        this.$http.post('/api/deployTask',
-          {'address': this.IPadd, 'taskName': this.TaskName, "dockerAdd": this.dockerAdd}
+        this.$http.post('/appi/deployTask',
+          {'address': this.IPadd,'taskName': this.TaskName, "dockerAdd": this.dockerAdd}
+        )
+          .then(() => {
+//            this.init();
+          })
+      },
+      schedulerTask: function () {
+        // console.log(this.name);
+        // agent.deployTask(req.body.address, req.body.taskName, req.body.dockerAdd);
+        this.$http.post('/appi/schedulerTask',
+          //req.body.address,req.body.taskName,req.body.params,req.body.reqCPU,req.body.reqMEM,req.body.eltiTime
+          {'address': this.IPaddrun, 'taskName': this.TaskNamerun, "params": this.params, "reqCPU": this.CPU, "reqMEM": this.MEM, "eltiTime": this.Time}
         )
           .then(() => {
 //            this.init();
@@ -220,13 +290,18 @@
             this.transactionPool = resp.data;
           });
       },
-      getInteractionPool: function () {
-        this.$http.get('/api/interactionPool')
+      getpreMoney: function () {
+        this.$http.get('/api/getMoney')
           .then((resp) => {
-            this.interactionPool = resp.data;
+            this.preMoney = resp.data;
+          });
+      },
+      getResult: function () {
+        this.$http.get('/api/getResult')
+          .then((resp) => {
+            this.taskResult = resp.data;
           });
       }
-
     }
   }
 </script>
