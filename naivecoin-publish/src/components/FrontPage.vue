@@ -136,7 +136,7 @@
     <div v-if="preMoney.length != 0 ">估算执行任务钱数:{{preMoney}}</div>
     <div v-if="preMoney.length === 0 "><span>暂无任务进行花费估算......</span></div>
     <br>
-    <div v-if="taskResult.length != 0 ">执行任务{{TaskNamerun}}的返回结果为：<br>{{taskResult}}</div>
+    <div v-if="taskResult.length != 0 ">执行任务{{TaskNamerun}}的返回结果为：<p class="text" v-html="taskResult"></p></div>
     <div v-if="taskResult.length === 0 "><span>暂无任务结果返回......</span></div>
     <br>
     <br>
@@ -299,7 +299,8 @@
       getResult: function () {
         this.$http.get('/api/getResult')
           .then((resp) => {
-            this.taskResult = resp.data;
+            let reg=new RegExp("\n","g");
+            this.taskResult = resp.data.replace(reg,"<br>");
           });
       }
     }
