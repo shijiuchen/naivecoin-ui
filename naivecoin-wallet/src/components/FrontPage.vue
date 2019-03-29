@@ -54,8 +54,22 @@
     <h5>产生区块</h5>
     <div align=""><!--center-->
     <button v-on:click="mineBlock" class="btn  btn-lg btn-primary">点击挖矿</button>
+      <!--<progress></progress>-->
+    </div>
+    <br>
+    <br>
+
+
+    <div class="progressContainer">
+      <div class="progress" :style="{width:progress+'%'}">
+        <b>{{progress}}% Completed</b>
+      </div>
     </div>
 
+
+
+
+<br>
     <footer id="footer" style="margin-top: 10%">
       <div class="container">
         <div class="row">
@@ -68,9 +82,11 @@
   </div>
 </template>
 
+
 <script>
   import TransItem from './TransItem.vue'
   import InterItem from './InterItem.vue'
+  // import progress from './progress-bar.vue'
   export default {
     name: 'FrontPage',
     data() {
@@ -81,11 +97,14 @@
         'interactionPool': [],
         'receiverAddress': null,
         'receiverAmount': null,
-        'isLOCK' : null
+        'isLOCK' : null,
+        'progress':0,
+        'interval': null
       }
     },
     created() {
       this.init();
+      this.play();
     },
     components: {
       TransItem,
@@ -153,8 +172,51 @@
           .then((resp) => {
             this.interactionPool = resp.data;
           });
+      },
+      setProgress: function () {
+          this.progress++;
+          if(this.progress === 31){
+            clearInterval(this.interval);
+            this.play();
+          }else if(this.progress === 71){
+            clearInterval(this.interval);
+            this.play();
+          }else if(this.progress === 99) {
+            clearInterval(this.interval);
+          }
+      },
+      play () {
+        if(this.progress<=30){
+          this.interval=setInterval(this.setProgress, 100);
+        }else if(this.progress<=70){
+          this.interval=setInterval(this.setProgress, 250);
+        }else{
+          this.interval=setInterval(this.setProgress, 500);
+        }
       }
 
     }
   }
 </script>
+<style>
+  div.progressContainer{
+    height: 30px;
+    width: 60%;
+    border-radius: 10px;
+    background-color: #ddd;
+    margin-left: 2%;
+  }
+  div.progress{
+    background-color: #1C8DE0;
+    border-radius: 10px;
+    height:30px;
+    line-height: 20px;
+  }
+  b{
+    color:#fff;
+    font-weight: 600;
+    font-size: 24px;
+    position:absolute;
+    left:30%;
+  }
+</style>

@@ -133,6 +133,17 @@
     <br>
 
     <h5>任务执行情况记录</h5>
+    <br>
+    <h6>任务完成进度</h6>
+    <br>
+    <div class="progressContainer">
+      <div class="progress" :style="{width:progress+'%'}">
+        <b>{{progress}}% Completed</b>
+      </div>
+    </div>
+    <br>
+    <h6>任务过程记录</h6>
+    <br>
     <div v-if="preMoney.length != 0 ">估算执行任务钱数:{{preMoney}}</div>
     <div v-if="preMoney.length === 0 "><span>暂无任务进行花费估算......</span></div>
     <br>
@@ -199,7 +210,12 @@
         'MEM': null,
         'Time': null,
         'preMoney': "",
-        'taskResult': ""
+        'taskResult': "",
+        'progress':0,
+        'interval': null,
+        'interval1': null,
+        'interval2': null,
+        'intervaldone': null
       }
     },
     created() {
@@ -215,8 +231,6 @@
         this.getBalance();
         this.getTransactionPool();
         this.getAlltasks();
-        this.getpreMoney();
-        this.getResult();
       },
       getAddress: function () {
         this.$http.get('/api/address')
@@ -252,13 +266,18 @@
       schedulerTask: function () {
         // console.log(this.name);
         // agent.deployTask(req.body.address, req.body.taskName, req.body.dockerAdd);
+        this.progress=0;
+        this.preMoney="";
+        this.taskResult="";
         this.$http.post('/appi/schedulerTask',
           //req.body.address,req.body.taskName,req.body.params,req.body.reqCPU,req.body.reqMEM,req.body.eltiTime
           {'address': this.IPaddrun, 'taskName': this.TaskNamerun, "params": this.params, "reqCPU": this.CPU, "reqMEM": this.MEM, "eltiTime": this.Time}
         )
           .then(() => {
 //            this.init();
-          })
+          });
+        this.timeTogetResults();
+        // this.play();
       },
       generateInteraction: function () {
         this.$http.post('/api/generateInteraction/task1',
@@ -295,6 +314,10 @@
           .then((resp) => {
             this.preMoney = resp.data;
           });
+        if(this.preMoney.length!=0){
+          clearInterval(this.interval1);
+          this.play();
+        }
       },
       getResult: function () {
         this.$http.get('/api/getResult')
@@ -302,7 +325,71 @@
             let reg=new RegExp("\n","g");
             this.taskResult = resp.data.replace(reg,"<br>");
           });
+        if(this.taskResult.length!=0){
+          clearInterval(this.interval2);
+        }
+      },
+      setProgress: function () {
+        this.progress++;
+        if(this.progress === 31){
+          clearInterval(this.interval);
+          this.play();
+        }else if(this.progress === 71){
+          clearInterval(this.interval);
+          this.play();
+        }else if(this.progress === 95) {
+          clearInterval(this.interval);
+          this.listen();
+        }
+      },
+      getProgress:function(){
+        if(this.progress == 95 && this.taskResult.length!=0){
+          this.setProgress();
+          this.setProgress();
+          this.setProgress();
+          this.setProgress();
+          this.setProgress();
+          clearInterval(this.intervaldone);
+        }
+      },
+      play () {
+        if(this.progress<=30){
+          this.interval=setInterval(this.setProgress, 100);
+        }else if(this.progress<=70){
+          this.interval=setInterval(this.setProgress, 250);
+        }else{
+          this.interval=setInterval(this.setProgress, 500);
+        }
+      },
+      timeTogetResults(){
+        this.interval1=setInterval(this.getpreMoney, 500);
+        this.interval2=setInterval(this.getResult,500);
+      },
+      listen(){
+        this.intervaldone=setInterval(this.getProgress,500);
       }
     }
   }
 </script>
+<style>
+  div.progressContainer{
+    height: 30px;
+    width: 60%;
+    border-radius: 10px;
+    background-color: #ddd;
+    margin-left: 2%;
+  }
+  div.progress{
+    background-color: #1C8DE0;
+    border-radius: 10px;
+    height:30px;
+    line-height: 20px;
+  }
+  b{
+    color:#fff;
+    font-weight: 600;
+    font-size: 24px;
+    position:absolute;
+    left:30%;
+  }
+</style>
