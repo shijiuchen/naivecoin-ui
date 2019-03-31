@@ -49,6 +49,46 @@
       </div>
       <br><br>
 
+      <h5>可执行计算任务列表</h5>
+      <table class="table table-hover table-striped">
+        <thead>
+        <tr class="text-center">
+          <th>任务序号</th>
+          <th>任务名</th>
+          <th>任务描述</th>
+          <th>基础镜像地址</th>
+          <th>需要参数描述</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr  class="text-center" v-if="flagAsylo === true ">
+          <td> 1 </td>
+          <td> computeMatrix </td>
+          <td> 计算两个矩阵乘法的计算结果 </td>
+          <td> gcr.io/asylo-framework/asylo:latest</td>
+          <td> 计算的两个矩阵，例((1,2;3,4):(1,3;2,9))</td>
+        </tr>
+        <tr  class="text-center" v-if="flagCaffe === true ">
+          <td> 2 </td>
+          <td> caffe </td>
+          <td> 训练mnist数据集 </td>
+          <td> shijiuchen/caffe_mnist:v1</td>
+          <td> 制作好镜像的docker地址</td>
+        </tr>
+        <tr  class="text-center" v-if="flagHadoop === true ">
+          <td> 3 </td>
+          <td> hadoop </td>
+          <td> hadoop wordcount 任务 </td>
+          <td>kiwenlau/hadoop:v1</td>
+          <td> 需要进行统计的txt文件本地全路径</td>
+        </tr>
+
+        </tbody>
+      </table>
+
+      <br>
+
       <h5>发布任务</h5>
       <div class="row">
 
@@ -92,46 +132,6 @@
     </form>
     <br><br>
 
-    <h5>可执行计算任务列表</h5>
-    <table class="table table-hover table-striped">
-      <thead>
-      <tr class="text-center">
-        <th>任务序号</th>
-        <th>任务名</th>
-        <th>任务描述</th>
-        <th>基础镜像地址</th>
-        <th>需要参数描述</th>
-      </tr>
-      </thead>
-
-      <tbody>
-      <tr  class="text-center">
-        <td> 1 </td>
-        <td> computeMatrix </td>
-        <td> 计算两个矩阵乘法的计算结果 </td>
-        <td> www.computeMatrix.com</td>
-        <td> 计算的两个矩阵</td>
-      </tr>
-      <tr  class="text-center">
-        <td> 2 </td>
-        <td> caffe </td>
-        <td> 训练mnist数据集 </td>
-        <td> www.caffe.com</td>
-        <td> 制作好的docker地址</td>
-      </tr>
-      <tr  class="text-center">
-        <td> 3 </td>
-        <td> hadoop </td>
-        <td> hadoop wordcount 任务 </td>
-        <td>www.hadoop.com</td>
-        <td> 需要进行统计的txt文件</td>
-      </tr>
-
-      </tbody>
-    </table>
-
-    <br>
-
     <h5>任务执行情况记录</h5>
     <br>
     <h6>任务完成进度</h6>
@@ -144,11 +144,11 @@
     <br>
     <h6>任务过程记录</h6>
     <br>
-    <div v-if="preMoney.length != 0 ">估算执行任务钱数:{{preMoney}}</div>
+    <div v-if="preMoney.length !== 0 ">估算执行任务钱数:{{preMoney}}</div>
     <div v-if="preMoney.length === 0 "><span>暂无任务进行花费估算......</span></div>
     <br>
-    <div v-if="taskResult.length != 0 ">执行任务{{TaskNamerun}}的返回结果为：<p class="text" v-html="taskResult"></p></div>
-    <div v-if="taskResult.length === 0 "><span>暂无任务结果返回......</span></div>
+    <div v-if="taskResult.length !== 0 && this.progress===100">执行任务{{TaskNamerun}}的返回结果为：<p class="text" v-html="taskResult"></p></div>
+    <div v-if="taskResult.length === 0 || this.progress!==100"><span>暂无任务结果返回......</span></div>
     <br>
     <br>
 
@@ -215,7 +215,10 @@
         'interval': null,
         'interval1': null,
         'interval2': null,
-        'intervaldone': null
+        'intervaldone': null,
+        'flagAsylo': false,
+        'flagCaffe': false,
+        'flagHadoop': false
       }
     },
     created() {
@@ -261,7 +264,16 @@
         )
           .then(() => {
 //            this.init();
-          })
+          });
+        console.log(this.TaskName);
+        if(this.TaskName === "asylo" ){
+          this.flagAsylo=true;
+        }else if(this.TaskName === "caffe"){
+          this.flagCaffe=true;
+        }else if(this.TaskName === "hadoop"){
+          this.flagHadoop=true;
+        }
+        console.log(this.flagCaffe);
       },
       schedulerTask: function () {
         // console.log(this.name);
@@ -310,23 +322,23 @@
           });
       },
       getpreMoney: function () {
-        this.$http.get('/api/getMoney')
-          .then((resp) => {
-            this.preMoney = resp.data;
-          });
-        if(this.preMoney.length!=0){
-          clearInterval(this.interval1);
+        if(this.preMoney.length===0){
+          this.$http.get('/api/getMoney')
+            .then((resp) => {
+              this.preMoney = resp.data;
+            });
+          //clearInterval(this.interval1);
           this.play();
         }
       },
       getResult: function () {
-        this.$http.get('/api/getResult')
-          .then((resp) => {
-            let reg=new RegExp("\n","g");
-            this.taskResult = resp.data.replace(reg,"<br>");
-          });
-        if(this.taskResult.length!=0){
-          clearInterval(this.interval2);
+        if(this.taskResult.length===0){
+          this.$http.get('/api/getResult')
+            .then((resp) => {
+              let reg=new RegExp("\n","g");
+              this.taskResult = resp.data.replace(reg,"<br>");
+            });
+          //clearInterval(this.interval2);
         }
       },
       setProgress: function () {
@@ -337,19 +349,19 @@
         }else if(this.progress === 71){
           clearInterval(this.interval);
           this.play();
-        }else if(this.progress === 95) {
+        }else if(this.progress === 98) {
           clearInterval(this.interval);
           this.listen();
         }
       },
       getProgress:function(){
-        if(this.progress == 95 && this.taskResult.length!=0){
-          this.setProgress();
-          this.setProgress();
-          this.setProgress();
+        if(this.progress === 98 && this.taskResult.length!==0){
           this.setProgress();
           this.setProgress();
           clearInterval(this.intervaldone);
+          clearInterval(this.interval1);
+          clearInterval(this.interval2);
+          this.getTransactionPool();
         }
       },
       play () {
