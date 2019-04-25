@@ -20,7 +20,7 @@ module.exports = {
         }
       },
       '/appi': {
-        target: 'http://localhost:3001',
+        target: 'http://192.168.1.56:3001',
         changeOrigin: true,
         pathRewrite: {
           '^/appi': ''
