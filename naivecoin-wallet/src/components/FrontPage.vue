@@ -35,9 +35,36 @@
         <!--<div class="col">-->
           <!--<button v-on:click="generateInteraction" class="btn btn-block btn-lg btn-primary">interaction</button>-->
         <!--</div>-->
-
       </div>
     </form>
+
+    <h5>任务执行情况记录</h5>
+    <br>
+    <h6>任务完成进度</h6>
+    <br>
+    <div class="progressContainer">
+      <div class="progress" :style="{width:progress+'%'}">
+        <b>{{progress}}% Completed</b>
+      </div>
+    </div>
+    <br>
+    <h6>任务过程记录</h6>
+    <br>
+    <div v-if="taskName.length !== 0 ">开始执行任务:{{taskName}}...</div>
+    <div v-if="taskName.length === 0 "><span>暂无任务执行......</span></div>
+    <br>
+    <div v-if="taskTime.length !== 0 && this.progress===100">执行任务{{taskName}}的执行时间为：<p class="text" v-html="taskTime"></p></div>
+    <div v-if="taskTime.length === 0 || this.progress!==100"><span>暂无执行时间返回......</span></div>
+    <br>
+    <div v-if="taskResult.length !== 0 && this.progress===100">执行任务{{taskResult}}的执行结果为：<p class="text" v-html="taskTime"></p></div>
+    <div v-if="taskResult.length === 0 || this.progress!==100"><span>暂无执行任务结果返回......</span></div>
+    <br>
+    <div v-if="taskExen.length !== 0 ">该任务执行工作量为:{{taskExen}}...</div>
+    <div v-if="taskExen.length === 0 "><span>暂无任务工作量返回......</span></div>
+    <br>
+    <br>
+
+
     <h5>交易池</h5>
     <div class="" v-for="tx in transactionPool">
       <trans-item :transHash="tx.id" :txIns="tx.txIns" :txOuts="tx.txOuts"></trans-item>
@@ -60,11 +87,11 @@
     <br>
 
 
-    <div class="progressContainer">
-      <div class="progress" :style="{width:progress+'%'}">
-        <b>{{progress}}% Completed</b>
-      </div>
-    </div>
+    <!--<div class="progressContainer">-->
+      <!--<div class="progress" :style="{width:progress+'%'}">-->
+        <!--<b>{{progress}}% Completed</b>-->
+      <!--</div>-->
+    <!--</div>-->
 
 
 
@@ -99,12 +126,21 @@
         'receiverAmount': null,
         'isLOCK' : null,
         'progress':0,
-        'interval': null
+        'interval': null,
+        'taskName': "",
+        'taskTime': "",
+        'taskResult':"",
+        'taskExen':"",
+        'interval1': null,
+        'interval2': null,
+        'interval3': null,
+        'interval4': null,
+        'intervaldone': null
       }
     },
     created() {
       this.init();
-      this.play();
+      // this.play();
     },
     components: {
       TransItem,
@@ -116,6 +152,7 @@
         this.getBalance();
         this.getTransactionPool();
         this.getInteractionPool();
+        this.timeTogetResults();
       },
       getAddress: function () {
         this.$http.get('/api/address')
@@ -173,6 +210,53 @@
             this.interactionPool = resp.data;
           });
       },
+      gettaskName: function () {
+        if(this.taskName.length===0){
+          this.$http.get('/api/getTaskName')
+            .then((resp) => {
+              this.taskName = resp.data;
+            });
+          //clearInterval(this.interval1);
+          if(this.taskName.length!==0){
+            this.play();
+          }
+        }
+      },
+      gettaskTime: function () {
+        if(this.taskTime.length===0){
+          this.$http.get('/api/getTaskTime')
+            .then((resp) => {
+              this.taskTime = resp.data;
+            });
+          //clearInterval(this.interval2);
+        }
+      },
+      gettaskExen: function () {
+        if(this.taskExen.length===0){
+          this.$http.get('/api/getSingleExen')
+            .then((resp) => {
+              this.taskExen = resp.data;
+            });
+          //clearInterval(this.interval1);
+          // this.play();
+        }
+      },
+      gettaskResult: function () {
+        if(this.taskResult.length===0){
+          this.$http.get('/api/getResult_miner')
+            .then((resp) => {
+              let reg=new RegExp("\n","g");
+              this.taskResult = resp.data.replace(reg,"<br>");
+            });
+          //clearInterval(this.interval2);
+        }
+      },
+      timeTogetResults(){
+        this.interval1=setInterval(this.gettaskName, 500);
+        this.interval2=setInterval(this.gettaskTime,500);
+        this.interval3=setInterval(this.gettaskExen,500);
+        this.interval4=setInterval(this.gettaskResult,500);
+      },
       setProgress: function () {
           this.progress++;
           if(this.progress === 31){
@@ -183,7 +267,18 @@
             this.play();
           }else if(this.progress === 99) {
             clearInterval(this.interval);
+            this.listen();
           }
+      },
+      getProgress:function(){
+        if(this.progress === 98 && this.taskResult.length!==0){
+          this.setProgress();
+          this.setProgress();
+          clearInterval(this.intervaldone);
+          // clearInterval(this.interval1);
+          // clearInterval(this.interval2);
+          this.getTransactionPool();
+        }
       },
       play () {
         if(this.progress<=30){
@@ -193,6 +288,9 @@
         }else{
           this.interval=setInterval(this.setProgress, 500);
         }
+      },
+      listen(){
+        this.intervaldone=setInterval(this.getProgress,500);
       }
 
     }
