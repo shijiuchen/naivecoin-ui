@@ -50,17 +50,29 @@
     <br>
     <h6>任务过程记录</h6>
     <br>
+
     <div v-if="taskName.length !== 0 ">开始执行任务:{{taskName}}</div>
+
+    <div v-if="taskName === 'hadoop' ">您被选为master节点</div>
+
     <div v-if="taskName.length === 0 "><span>暂无任务执行......</span></div>
+
     <br>
-    <div v-if="taskTime1.length !== 0 && taskTime2.length !== 0 && this.progress===100">执行任务{{taskName}}的执行时间为：<p class="text" v-html="parseInt(taskTime2)-parseInt(taskTime1)"></p></div>
+    <div v-if="taskTime1.length !== 0 && taskTime2.length !== 0 && this.progress===100">执行任务{{taskName}}的执行时间为：<p class="text" v-html="parseInt(taskTime2)-parseInt(taskTime1)"></p>ms</div>
     <div v-if="taskTime1.length === 0 || taskTime2.length === 0 || this.progress!==100"><span>暂无执行时间返回......</span></div>
     <br>
     <div v-if="taskResult.length !== 0 && this.progress===100">执行任务{{taskName}}的执行结果为：<p class="text" v-html="taskResult"></p></div>
     <div v-if="taskResult.length === 0 || this.progress!==100"><span>暂无执行任务结果返回......</span></div>
     <br>
-    <div v-if="taskExen.length !== 0 ">该任务执行工作量为:{{taskExen}}</div>
-    <div v-if="taskExen.length === 0 "><span>暂无任务工作量返回......</span></div>
+
+    <div v-if="taskExen.length !== 0 ">该任务执行工作量为:{{taskExen}}cores*s</div>
+
+    <div v-if="taskExenMaster.length !== 0 && taskExenWorker1.length !== 0 && taskExenWorker2.length !== 0">该任务执行工作量为:master:{{taskExenMaster}}cores*s;worker1:{{taskExenWorker1}}cores*s;worker2:{{taskExenWorker2}}cores*s</div>
+
+    <div v-if="taskExenWorker.length !== 0 ">执行任务hadoop，您是worker节点，该任务执行工作量为:{{taskExenWorker}}cores*s</div>
+
+    <div v-if="taskExen.length === 0 &&  taskExenMaster.length === 0 && taskExenWorker1.length === 0 && taskExenWorker2.length === 0 && taskExenWorker.length === 0"><span>暂无任务工作量返回......</span></div>
+
     <br>
     <br>
 
@@ -132,11 +144,19 @@
         'taskTime2':"",
         'taskResult':"",
         'taskExen':"",
+        'taskExenMaster':"",
+        'taskExenWorker1':"",
+        'taskExenWorker2':"",
+        'taskExenWorker': "",
         'interval1': null,
         'interval2': null,
         'interval3': null,
         'interval4': null,
         'interval5': null,
+        'interval6': null,
+        'interval7': null,
+        'interval8': null,
+        'interval9': null,
         'intervaldone': null
       }
     },
@@ -255,6 +275,50 @@
           // this.play();
         }
       },
+      gettaskExenMaster: function () {
+        if(this.taskExenMaster.length===0){
+          this.$http.get('/api/getExenMaster')
+            .then((resp) => {
+              this.taskExenMaster = resp.data;
+              console.log("this.exenMaster="+this.taskExenMaster);
+            });
+          //clearInterval(this.interval1);
+          // this.play();
+        }
+      },
+      gettaskExenWorker1: function () {
+        if(this.taskExenWorker1.length===0){
+          this.$http.get('/api/getExenWorker1')
+            .then((resp) => {
+              this.taskExenWorker1 = resp.data;
+              console.log("this.exenWorker1="+this.taskExenWorker1);
+            });
+          //clearInterval(this.interval1);
+          // this.play();
+        }
+      },
+      gettaskExenWorker2: function () {
+        if(this.taskExenWorker2.length===0){
+          this.$http.get('/api/getExenWorker2')
+            .then((resp) => {
+              this.taskExenWorker2 = resp.data;
+              console.log("this.exenWorker2="+this.taskExenWorker2);
+            });
+          //clearInterval(this.interval1);
+          // this.play();
+        }
+      },
+      gettaskExenWorker: function () {
+        if(this.taskExenWorker.length===0){
+          this.$http.get('/api/getExenWorker')
+            .then((resp) => {
+              this.taskExenWorker = resp.data;
+              console.log("this.exenWorker="+this.taskExenWorker);
+            });
+          //clearInterval(this.interval1);
+          // this.play();
+        }
+      },,
       gettaskResult: function () {
         if(this.taskResult.length===0){
           this.$http.get('/api/getResult_miner')
@@ -272,6 +336,10 @@
         this.interval3=setInterval(this.gettaskResult,5000);
         this.interval4=setInterval(this.getBegintaskTime,5000);
         this.interval5=setInterval(this.getEndtaskTime,5000);
+        this.interval6=setInterval(this.gettaskExenMaster,5000);
+        this.interval7=setInterval(this.gettaskExenWorker1,5000);
+        this.interval8=setInterval(this.gettaskExenWorker2,5000);
+        this.interval9=setInterval(this.gettaskExenWorker,5000);
       },
       setProgress: function () {
         this.progress++;
