@@ -33,7 +33,7 @@
         <td><div v-if="block.report===''">此区块非算力区块，无report</div><div v-else>{{ block.report}}</div></td>
       </tr>
       <tr>
-        <th>pouw</th>
+        <th>proof</th>
         <td><div v-if="block.pouw===''">此区块非算力区块，无pouw</div><div v-else>{{ block.pouw}}</div></td>
       </tr>
       <tr>

@@ -40,6 +40,14 @@
           <input v-model="TaskName" class="form-control" type="text" placeholder="任务名" id="TaskName">
         </div>
         <div class="col form-group ">
+          <label for="detail">任务描述</label>
+          <input v-model="detail" class="form-control" type="text" placeholder="任务名" id="detail">
+        </div>
+        <div class="col form-group ">
+          <label for="use">任务参数</label>
+          <input v-model="use" class="form-control" type="text" placeholder="任务名" id="use">
+        </div>
+        <div class="col form-group ">
           <label for="dockerAdd">docker地址</label>
           <input v-model="dockerAdd" class="form-control" type="text" placeholder="docker地址" id="dockerAdd">
         </div>
@@ -108,7 +116,7 @@
 
       <div class="row">
         <div class="col form-group ">
-          <label for="CPU">预计CPU/cores</label>
+          <label for="CPU">预计CPU/%cores</label>
           <input v-model="CPU" class="form-control" type="text" placeholder="CPU" id="CPU">
         </div>
         <div class="col form-group ">
@@ -218,7 +226,9 @@
         'intervaldone': null,
         'flagAsylo': false,
         'flagCaffe': false,
-        'flagHadoop': false
+        'flagHadoop': false,
+        'detail': "",
+        'use':""
       }
     },
     created() {
@@ -259,6 +269,9 @@
       deployTask: function () {
         // console.log(this.name);
         // agent.deployTask(req.body.address, req.body.taskName, req.body.dockerAdd);
+        if(this.TaskName === "computeMatrix"){
+          this.TaskName="asylo";
+        }
         this.$http.post('/appi/deployTask',
           {'address': this.IPadd,'taskName': this.TaskName, "dockerAdd": this.dockerAdd}
         )
@@ -281,6 +294,9 @@
         this.progress=0;
         this.preMoney="";
         this.taskResult="";
+        if(this.TaskNamerun === "computeMatrix"){
+          this.TaskNamerun="asylo";
+        }
         this.$http.post('/appi/schedulerTask',
           //req.body.address,req.body.taskName,req.body.params,req.body.reqCPU,req.body.reqMEM,req.body.eltiTime
           {'address': this.IPaddrun, 'taskName': this.TaskNamerun, "params": this.params, "reqCPU": this.CPU, "reqMEM": this.MEM, "eltiTime": this.Time}

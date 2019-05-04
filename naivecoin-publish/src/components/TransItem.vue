@@ -27,7 +27,7 @@
             锁定标志: {{txOut.LOCK}}
             <br>
             <div v-if="txOut.codeHash === ''">
-              锁定代码hash: 此交易为普通交易，无算力codehash
+              锁定代码hash: 此交易无任务锁定
             </div>
             <div v-else>
               锁定代码hash: {{txOut.codeHash}}
@@ -39,21 +39,21 @@
 
 
       <div class="txn-input truncate" v-if="txReport === ''">
-        report: 此交易为普通交易，无算力report
+        report: 此交易无算力report
       </div>
       <div class="txn-input truncate" v-else>
         report: {{ txReport }}
       </div>
 
       <div class="txn-input truncate" v-if="txProof === ''">
-        proof: 此交易为普通交易，无算力proof
+        proof: 此交易无算力proof
       </div>
       <div class="txn-input truncate" v-else>
         proof: {{txProof}}
       </div>
 
       <div class="txn-input truncate" v-if="txWL === 0">
-        workload: 此交易为普通交易，无算力workload
+        workload: 此交易无算力workload
       </div>
       <div class="txn-input truncate" v-else>
         workload: {{txWL}}
