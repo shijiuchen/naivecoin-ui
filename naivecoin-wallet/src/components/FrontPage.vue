@@ -59,25 +59,25 @@
     <br>
 
     <div style="background: whitesmoke;font-size: 13px">
-      <div v-if="taskName.length !== 0 ">开始执行任务:{{taskName}}</div>
+      <div v-if="taskName.length !== 0 "><div v-if="this.taskName==='asylo'">开始执行任务computeMatrix</div><div v-else>开始执行任务{{taskName}}</div></div>
       <br>
       <div v-if="taskName === 'hadoop' ">您被选为master节点</div>
 
       <div v-if="taskName.length === 0 "><span>暂无任务执行......</span></div>
 
       <br>
-      <div v-if="taskTime1.length !== 0 && taskTime2.length !== 0 && this.progress===100">执行任务{{taskName}}的执行时间为：<p class="text" v-html="parseInt(taskTime2)-parseInt(taskTime1)"></p>ms</div>
+      <div v-if="taskTime1.length !== 0 && taskTime2.length !== 0 && this.progress===100"><div v-if="this.taskName==='asylo'">执行任务computeMatrix的时间为：</div><div v-else>执行任务{{taskName}}的时间为：</div><p class="text" v-html="parseInt(taskTime2)-parseInt(taskTime1)">ms</p></div>
       <div v-if="taskTime1.length === 0 || taskTime2.length === 0 || this.progress!==100"><span>暂无执行时间返回......</span></div>
       <br>
-      <div class="divcss5-a" v-if="taskResult.length !== 0 && this.progress===100">执行任务<div v-if="this.taskName==='asylo'">computeMatrix</div><div v-else>{{taskName}}</div>的结果为：<p class="text" v-html="taskResult"></p></div>
+      <div class="divcss5-a" v-if="taskResult.length !== 0 && this.progress===100"><div v-if="this.taskName==='asylo'">执行任务computeMatrix的结果为：</div><div v-else>执行任务{{taskName}}的结果为：</div><p class="text" style="font-size: 13px; line-height: 10px" v-html="taskResult"></p></div>
       <div v-if="taskResult.length === 0 || this.progress!==100"><span>暂无执行任务结果返回......</span></div>
       <br>
 
-      <div v-if="taskExen.length !== 0 ">该任务执行工作量为:{{taskExen}}cores*s</div>
+      <div v-if="taskExen.length !== 0 ">该任务执行工作量为:{{taskExen}}(cores+MB)*s</div>
 
-      <div v-if="taskExenMaster.length !== 0 && taskExenWorker1.length !== 0 && taskExenWorker2.length !== 0">该任务执行工作量为:<br>master:{{taskExenMaster}}cores*s;worker1:{{taskExenWorker1}}cores*s;worker2:{{taskExenWorker2}}cores*s</div>
+      <div v-if="taskExenMaster.length !== 0 && taskExenWorker1.length !== 0 && taskExenWorker2.length !== 0">该任务执行工作量为:<br>master:{{taskExenMaster}}(cores+MB)*s;worker1:{{taskExenWorker1}}(cores+MB)*s;worker2:{{taskExenWorker2}}(cores+MB)*s</div>
 
-      <div v-if="taskExenWorker.length !== 0 ">执行任务hadoop<br>您是worker节点<br>该任务执行工作量为:{{taskExenWorker}}cores*s</div>
+      <div v-if="taskExenWorker.length !== 0 ">执行任务hadoop<br>您是worker节点<br>该任务执行工作量为:{{taskExenWorker}}(cores+MB)*s</div>
 
       <div v-if="taskExen.length === 0 &&  taskExenMaster.length === 0 && taskExenWorker1.length === 0 && taskExenWorker2.length === 0 && taskExenWorker.length === 0"><span>暂无任务工作量返回......</span></div>
 

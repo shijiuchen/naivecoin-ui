@@ -164,7 +164,7 @@
       <div v-if="preMoney.length !== 0 ">估算执行任务钱数:{{preMoney}}</div>
       <div v-if="preMoney.length === 0 "><span>暂无任务进行花费估算......</span></div>
       <br>
-      <div class="divcss5-a" v-if="taskResult.length !== 0 && this.progress===100">执行任务<div v-if="this.TaskNamerun==='asylo'">computeMatrix</div><div v-else>{{TaskNamerun}}</div>的返回结果为：<p class="text" v-html="taskResult"></p></div>
+      <div class="divcss5-a" v-if="taskResult.length !== 0 && this.progress===100"><div v-if="this.TaskNamerun==='asylo'">执行任务computeMatrix的返回结果为：</div><div v-else>执行任务{{TaskNamerun}}的返回结果为：</div><p class="text" style="font-size: 13px; line-height: 10px" v-html="taskResult"></p></div>
       <div v-if="taskResult.length === 0 || this.progress!==100"><span>暂无任务结果返回......</span></div>
     </div>
     <br>
@@ -285,7 +285,7 @@
         if(this.TaskName === "computeMatrix"){
           this.temp="asylo";
         }else{
-          this.temp=this.taskName;
+          this.temp=this.TaskName;
         }
         this.$http.post('/appi/deployTask',
           {'address': this.IPadd,'taskName': this.temp, "dockerAdd": this.dockerAdd}
