@@ -1,15 +1,17 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <router-link :to="{ name: 'Transaction', params: { id: transHash }}"><span>{{ transHash }}</span></router-link>
+      <span style="color: #6f42c1">{{ transHash }}</span>
     </div>
+
     <div class="card-body">
+
       <div class="row">
 
         <div class="col-sm-6">
           <div v-for="txIn in txIns">
             <div class ='txn-input truncate' v-if="txIn.signature === ''">coinbase</div>
-            <div class="break-word txn-input truncate" v-else>{{ txIn.txOutId }} {{ txIn.txOutIndex }}</div>
+            <div class="break-word txn-input truncate" style="color: #27ad60" v-else>{{ txIn.txOutId }}{{ txIn.txOutIndex }}</div>
           </div>
         </div>
 
@@ -20,18 +22,53 @@
                 <span>{{ txOut.address }}</span>
               </router-link>
             </div>
-            amount: {{ txOut.amount}}
+            金额: {{ txOut.amount}}
+            <br>
+            锁定标志: {{txOut.LOCK}}
+            <br>
+            <div v-if="txOut.codeHash === ''">
+              锁定代码hash: 此交易为普通交易，无算力codehash
+            </div>
+            <div v-else>
+              锁定代码hash: {{txOut.codeHash}}
+            </div>
           </div>
         </div>
+
       </div>
+
+
+      <div class="txn-input truncate" v-if="txReport === ''">
+        report: 此交易为普通交易，无算力report
+      </div>
+      <div class="txn-input truncate" v-else>
+        report: {{ txReport }}
+      </div>
+
+      <div class="txn-input truncate" v-if="txProof === ''">
+        proof: 此交易为普通交易，无算力proof
+      </div>
+      <div class="txn-input truncate" v-else>
+        proof: {{txProof}}
+      </div>
+
+      <div class="txn-input truncate" v-if="txWL === 0">
+        workload: 此交易为普通交易，无算力workload
+      </div>
+      <div class="txn-input truncate" v-else>
+        workload: {{txWL}}
+      </div>
+
+
     </div>
+
   </div>
 </template>
 
 <script>
   export default {
     props:
-      ['transHash', 'txIns', 'txOuts']
+      ['transHash', 'txIns', 'txOuts', 'txReport', 'txProof', 'txWL']
   }
 </script>
 <style>

@@ -20,10 +20,10 @@
           <label for="amount">金额</label>
           <input v-model="receiverAmount" class="form-control" type="number" placeholder="0" id="amount">
         </div>
-        <div class="col form-group ">
-          <label for="isLOCK">锁定交易</label>
-          <input v-model="isLOCK" class="form-control" type="text" placeholder="false" id="islock">
-        </div>
+        <!--<div class="col form-group ">-->
+          <!--<label for="isLOCK">锁定交易</label>-->
+          <!--<input v-model="isLOCK" class="form-control" type="text" placeholder="false" id="islock">-->
+        <!--</div>-->
       </div>
       <div class="row">
         <div class="col">
@@ -79,7 +79,7 @@
 
     <h5>交易池</h5>
     <div class="" v-for="tx in transactionPool">
-      <trans-item :transHash="tx.id" :txIns="tx.txIns" :txOuts="tx.txOuts"></trans-item>
+      <trans-item :transHash="tx.id" :txIns="tx.txIns" :txOuts="tx.txOuts" :txReport="tx.report" :txProof="tx.proof" :txWL="tx.workload"></trans-item>
     </div>
     <div v-if="transactionPool.length === 0"><span>交易池为空</span></div>
     <br>
@@ -113,7 +113,7 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12">
-            <span class=""> <em>Copyright &copy; 2018.SJUT All rights reserved.</em></span>
+            <span class=""> <em>Copyright &copy; 2019.DLUT All rights reserved.</em></span>
           </div>
         </div>
       </div>

@@ -25,6 +25,18 @@
         <td>{{ block.nonce}}</td>
       </tr>
       <tr>
+        <th>Workload</th>
+        <td><div v-if="block.workload===0">此区块非算力区块，无workload</div><div v-else>{{ block.workload}}</div></td>
+      </tr>
+      <tr>
+        <th>report</th>
+        <td><div v-if="block.report===''">此区块非算力区块，无report</div><div v-else>{{ block.report}}</div></td>
+      </tr>
+      <tr>
+        <th>pouw</th>
+        <td><div v-if="block.pouw===''">此区块非算力区块，无pouw</div><div v-else>{{ block.pouw}}</div></td>
+      </tr>
+      <tr>
         <th>Number of transactions</th>
         <td>{{ block.data.length}}</td>
       </tr>
@@ -33,7 +45,7 @@
     </table>
     <h3>Transactions</h3>
     <div class="" v-for="tx in block.data">
-      <trans-item :transHash="tx.id" :txIns="tx.txIns" :txOuts="tx.txOuts"></trans-item>
+      <trans-item :transHash="tx.id" :txIns="tx.txIns" :txOuts="tx.txOuts" :txReport="tx.report" :txProof="tx.proof" :txWL="tx.workload"></trans-item>
     </div>
   </div>
 </template>

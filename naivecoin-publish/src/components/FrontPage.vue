@@ -19,10 +19,10 @@
           <label for="amount">金额</label>
           <input v-model="receiverAmount" class="form-control" type="number" placeholder="0" id="amount">
         </div>
-        <div class="col form-group ">
-          <label for="isLOCK">锁定交易</label>
-          <input v-model="isLOCK" class="form-control" type="text" placeholder="false" id="islock">
-        </div>
+        <!--<div class="col form-group ">-->
+          <!--<label for="isLOCK">锁定交易</label>-->
+          <!--<input v-model="isLOCK" class="form-control" type="text" placeholder="false" id="islock">-->
+        <!--</div>-->
       </div>
       <div class="">
         <button v-on:click="sendTransaction" class="btn  btn-lg btn-primary">发送</button>
@@ -67,7 +67,7 @@
           <td> computeMatrix </td>
           <td> 计算两个矩阵乘法的计算结果 </td>
           <td> gcr.io/asylo-framework/asylo:latest</td>
-          <td> 计算的两个矩阵，例((1,2;3,4):(1,3;2,9))</td>
+          <td> 计算的两个矩阵文件全路径，格式为((1,2;3,4):(1,3;2,9))</td>
         </tr>
         <tr  class="text-center" v-if="flagCaffe === true ">
           <td> 2 </td>
@@ -108,15 +108,15 @@
 
       <div class="row">
         <div class="col form-group ">
-          <label for="CPU">预计CPU</label>
+          <label for="CPU">预计CPU/cores</label>
           <input v-model="CPU" class="form-control" type="text" placeholder="CPU" id="CPU">
         </div>
         <div class="col form-group ">
-          <label for="MEM">预计MEM</label>
+          <label for="MEM">预计MEM/MB</label>
           <input v-model="MEM" class="form-control" type="text" placeholder="MEM" id="MEM">
         </div>
         <div class="col form-group ">
-          <label for="Time">预计Time</label>
+          <label for="Time">预计Time/s</label>
           <input v-model="Time" class="form-control" type="text" placeholder="Time" id="Time">
         </div>
       </div>
@@ -155,7 +155,7 @@
 
     <h5>交易池</h5>
     <div class="" v-for="tx in transactionPool">
-      <trans-item :transHash="tx.id" :txIns="tx.txIns" :txOuts="tx.txOuts"></trans-item>
+      <trans-item :transHash="tx.id" :txIns="tx.txIns" :txOuts="tx.txOuts" :txReport="tx.report" :txProof="tx.proof" :txWL="tx.workload"></trans-item>
     </div>
     <div v-if="transactionPool.length === 0"><span>交易池为空......</span></div>
     <br>
@@ -174,7 +174,7 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12">
-            <span class=""> <em>Copyright &copy; 2018.SJUT All rights reserved.</em></span>
+            <span class=""> <em>Copyright &copy; 2019.DLUT All rights reserved.</em></span>
           </div>
         </div>
       </div>

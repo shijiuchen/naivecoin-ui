@@ -4,7 +4,7 @@
       <div class="container"><h3>
         <img src="/static/images/brand.png" width="64" height="64">
         <a class="header-link" href="/">
-        BB-RAP区块浏览器</a>
+        IR-DCP区块浏览器</a>
         </h3>
       </div>
 
@@ -50,27 +50,27 @@
       </tbody>
     </table>
     <br>
-    <h4><span style="margin-top: 5em">最新交互</span></h4>
-    <table class="table table-hover table-striped">
-      <thead>
-      <tr class="text-center">
-        <th>交互序号</th>
-        <th>交互ID</th>
-        <th>AppID</th>
-        <th>交互时间</th>
-      </tr>
-      </thead>
+    <!--<h4><span style="margin-top: 5em">最新交互</span></h4>-->
+    <!--<table class="table table-hover table-striped">-->
+      <!--<thead>-->
+      <!--<tr class="text-center">-->
+        <!--<th>交互序号</th>-->
+        <!--<th>交互ID</th>-->
+        <!--<th>AppID</th>-->
+        <!--<th>交互时间</th>-->
+      <!--</tr>-->
+      <!--</thead>-->
 
-      <tbody>
-      <tr v-for="(ix,index) in interactions" class="text-center">
-        <td>{{index+1}}</td>
-        <td>{{ ix.id}}</td>
-        <td>{{ix.appId}}</td>
-        <td width="150px">{{ getTime(ix.time)}}</td>
-      </tr>
-      </tbody>
-    </table>
-    <br>
+      <!--<tbody>-->
+      <!--<tr v-for="(ix,index) in interactions" class="text-center">-->
+        <!--<td>{{index+1}}</td>-->
+        <!--<td>{{ ix.id}}</td>-->
+        <!--<td>{{ix.appId}}</td>-->
+        <!--<td width="150px">{{ getTime(ix.time)}}</td>-->
+      <!--</tr>-->
+      <!--</tbody>-->
+    <!--</table>-->
+    <!--<br>-->
 
 
     </div>
@@ -122,9 +122,10 @@
           .value();
       },
       totalValue: function(transaction) {
-        return _(transaction.txOuts)
-          .map(txOut => txOut.amount)
-          .sum()
+        return transaction.txOuts[0].amount
+        // return _(transaction.txOuts)
+        //   .map(txOut => txOut.amount)
+        //   .sum()
       },
       getTime: function(time){
         return new Date(parseInt(time) * 1000).toLocaleString().replace(/:\d{1,2}$/,' ');

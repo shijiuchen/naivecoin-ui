@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="container"><h1><a class="header-link" href="/">IR-DCP Wallet</a></h1>
+    <div class="container"><h1><a class="header-link" href="/">IR-DCP Agent</a></h1>
       <router-view :key="$route.fullPath"/></div>
   </div>
 </template>
