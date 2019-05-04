@@ -37,6 +37,13 @@
         <!--</div>-->
       </div>
     </form>
+    <h5>产生普通交易区块</h5>
+    <div align=""><!--center-->
+      <button v-on:click="mineBlock" class="btn  btn-lg btn-primary">点击挖矿</button>
+      <!--<progress></progress>-->
+    </div>
+    <br>
+    <br>
 
     <h5>任务执行情况记录</h5>
     <br>
@@ -51,28 +58,30 @@
     <h6>任务过程记录</h6>
     <br>
 
-    <div v-if="taskName.length !== 0 ">开始执行任务:{{taskName}}</div>
-    <br>
-    <div v-if="taskName === 'hadoop' ">您被选为master节点</div>
+    <div style="background: whitesmoke;font-size: 13px">
+      <div v-if="taskName.length !== 0 ">开始执行任务:{{taskName}}</div>
+      <br>
+      <div v-if="taskName === 'hadoop' ">您被选为master节点</div>
 
-    <div v-if="taskName.length === 0 "><span>暂无任务执行......</span></div>
+      <div v-if="taskName.length === 0 "><span>暂无任务执行......</span></div>
 
-    <br>
-    <div v-if="taskTime1.length !== 0 && taskTime2.length !== 0 && this.progress===100">执行任务{{taskName}}的执行时间为：<p class="text" v-html="parseInt(taskTime2)-parseInt(taskTime1)"></p>ms</div>
-    <div v-if="taskTime1.length === 0 || taskTime2.length === 0 || this.progress!==100"><span>暂无执行时间返回......</span></div>
-    <br>
-    <div v-if="taskResult.length !== 0 && this.progress===100">执行任务{{taskName}}的执行结果为：<p class="text" v-html="taskResult"></p></div>
-    <div v-if="taskResult.length === 0 || this.progress!==100"><span>暂无执行任务结果返回......</span></div>
-    <br>
+      <br>
+      <div v-if="taskTime1.length !== 0 && taskTime2.length !== 0 && this.progress===100">执行任务{{taskName}}的执行时间为：<p class="text" v-html="parseInt(taskTime2)-parseInt(taskTime1)"></p>ms</div>
+      <div v-if="taskTime1.length === 0 || taskTime2.length === 0 || this.progress!==100"><span>暂无执行时间返回......</span></div>
+      <br>
+      <div class="divcss5-a" v-if="taskResult.length !== 0 && this.progress===100">执行任务<div v-if="this.taskName==='asylo'">computeMatrix</div><div v-else>{{taskName}}</div>的结果为：<p class="text" v-html="taskResult"></p></div>
+      <div v-if="taskResult.length === 0 || this.progress!==100"><span>暂无执行任务结果返回......</span></div>
+      <br>
 
-    <div v-if="taskExen.length !== 0 ">该任务执行工作量为:{{taskExen}}cores*s</div>
+      <div v-if="taskExen.length !== 0 ">该任务执行工作量为:{{taskExen}}cores*s</div>
 
-    <div v-if="taskExenMaster.length !== 0 && taskExenWorker1.length !== 0 && taskExenWorker2.length !== 0">该任务执行工作量为:<br>master:{{taskExenMaster}}cores*s;worker1:{{taskExenWorker1}}cores*s;worker2:{{taskExenWorker2}}cores*s</div>
+      <div v-if="taskExenMaster.length !== 0 && taskExenWorker1.length !== 0 && taskExenWorker2.length !== 0">该任务执行工作量为:<br>master:{{taskExenMaster}}cores*s;worker1:{{taskExenWorker1}}cores*s;worker2:{{taskExenWorker2}}cores*s</div>
 
-    <div v-if="taskExenWorker.length !== 0 ">执行任务hadoop<br>您是worker节点<br>该任务执行工作量为:{{taskExenWorker}}cores*s</div>
+      <div v-if="taskExenWorker.length !== 0 ">执行任务hadoop<br>您是worker节点<br>该任务执行工作量为:{{taskExenWorker}}cores*s</div>
 
-    <div v-if="taskExen.length === 0 &&  taskExenMaster.length === 0 && taskExenWorker1.length === 0 && taskExenWorker2.length === 0 && taskExenWorker.length === 0"><span>暂无任务工作量返回......</span></div>
+      <div v-if="taskExen.length === 0 &&  taskExenMaster.length === 0 && taskExenWorker1.length === 0 && taskExenWorker2.length === 0 && taskExenWorker.length === 0"><span>暂无任务工作量返回......</span></div>
 
+    </div>
     <br>
     <br>
 
@@ -90,15 +99,6 @@
     <!--</div>-->
     <!--<div v-if="interactionPool.length === 0"><span>交互池为空</span></div>-->
     <!--<br>-->
-    <h5>产生区块</h5>
-    <div align=""><!--center-->
-      <button v-on:click="mineBlock" class="btn  btn-lg btn-primary">点击挖矿</button>
-      <!--<progress></progress>-->
-    </div>
-    <br>
-    <br>
-
-
     <!--<div class="progressContainer">-->
     <!--<div class="progress" :style="{width:progress+'%'}">-->
     <!--<b>{{progress}}% Completed</b>-->
@@ -403,4 +403,5 @@
     position:absolute;
     left:30%;
   }
+  div.divcss5-a{ line-height:10px}/* css 注释说明：设置行距行高10px */
 </style>

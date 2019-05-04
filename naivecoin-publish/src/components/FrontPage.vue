@@ -29,6 +29,14 @@
       </div>
       <br><br>
 
+      <h5>产生普通交易区块</h5>
+      <div align=""><!--center-->
+        <button v-on:click="mineBlock" class="btn  btn-lg btn-primary">点击挖矿</button>
+        <!--<progress></progress>-->
+      </div>
+      <br>
+      <br>
+
       <h5>部署任务</h5>
       <div class="row">
         <div class="col form-group ">
@@ -150,13 +158,15 @@
       </div>
     </div>
     <br>
+    <br>
     <h6>任务过程记录</h6>
-    <br>
-    <div v-if="preMoney.length !== 0 ">估算执行任务钱数:{{preMoney}}</div>
-    <div v-if="preMoney.length === 0 "><span>暂无任务进行花费估算......</span></div>
-    <br>
-    <div v-if="taskResult.length !== 0 && this.progress===100">执行任务{{TaskNamerun}}的返回结果为：<p class="text" v-html="taskResult"></p></div>
-    <div v-if="taskResult.length === 0 || this.progress!==100"><span>暂无任务结果返回......</span></div>
+    <div style="background: whitesmoke;font-size: 13px">
+      <div v-if="preMoney.length !== 0 ">估算执行任务钱数:{{preMoney}}</div>
+      <div v-if="preMoney.length === 0 "><span>暂无任务进行花费估算......</span></div>
+      <br>
+      <div class="divcss5-a" v-if="taskResult.length !== 0 && this.progress===100">执行任务<div v-if="this.TaskNamerun==='asylo'">computeMatrix</div><div v-else>{{TaskNamerun}}</div>的返回结果为：<p class="text" v-html="taskResult"></p></div>
+      <div v-if="taskResult.length === 0 || this.progress!==100"><span>暂无任务结果返回......</span></div>
+    </div>
     <br>
     <br>
 
@@ -228,7 +238,9 @@
         'flagCaffe': false,
         'flagHadoop': false,
         'detail': "",
-        'use':""
+        'use':"",
+        'temp': "",
+        'intervalTx': null
       }
     },
     created() {
@@ -244,6 +256,7 @@
         this.getBalance();
         this.getTransactionPool();
         this.getAlltasks();
+        this.intervalTx=setInterval(this.getTransactionPool,2000);
       },
       getAddress: function () {
         this.$http.get('/api/address')
@@ -270,20 +283,22 @@
         // console.log(this.name);
         // agent.deployTask(req.body.address, req.body.taskName, req.body.dockerAdd);
         if(this.TaskName === "computeMatrix"){
-          this.TaskName="asylo";
+          this.temp="asylo";
+        }else{
+          this.temp=this.taskName;
         }
         this.$http.post('/appi/deployTask',
-          {'address': this.IPadd,'taskName': this.TaskName, "dockerAdd": this.dockerAdd}
+          {'address': this.IPadd,'taskName': this.temp, "dockerAdd": this.dockerAdd}
         )
           .then(() => {
 //            this.init();
           });
-        console.log(this.TaskName);
-        if(this.TaskName === "asylo" ){
+        console.log(this.temp);
+        if(this.temp === "asylo" ){
           this.flagAsylo=true;
-        }else if(this.TaskName === "caffe"){
+        }else if(this.temp === "caffe"){
           this.flagCaffe=true;
-        }else if(this.TaskName === "hadoop"){
+        }else if(this.temp === "hadoop"){
           this.flagHadoop=true;
         }
         console.log(this.flagCaffe);
@@ -295,11 +310,13 @@
         this.preMoney="";
         this.taskResult="";
         if(this.TaskNamerun === "computeMatrix"){
-          this.TaskNamerun="asylo";
+          this.temp="asylo";
+        }else{
+          this.temp=this.TaskNamerun;
         }
         this.$http.post('/appi/schedulerTask',
           //req.body.address,req.body.taskName,req.body.params,req.body.reqCPU,req.body.reqMEM,req.body.eltiTime
-          {'address': this.IPaddrun, 'taskName': this.TaskNamerun, "params": this.params, "reqCPU": this.CPU, "reqMEM": this.MEM, "eltiTime": this.Time}
+          {'address': this.IPaddrun, 'taskName': this.temp, "params": this.params, "reqCPU": this.CPU, "reqMEM": this.MEM, "eltiTime": this.Time}
         )
           .then(() => {
 //            this.init();
@@ -420,4 +437,5 @@
     position:absolute;
     left:30%;
   }
+  div.divcss5-a{ line-height:10px}/* css 注释说明：设置行距行高10px */
 </style>
