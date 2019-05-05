@@ -66,10 +66,10 @@
       <div v-if="taskName.length === 0 "><span>暂无任务执行......</span></div>
 
       <br>
-      <div v-if="taskTime1.length !== 0 && taskTime2.length !== 0 && this.progress===100"><div v-if="this.taskName==='asylo'">执行任务computeMatrix的时间为：</div><div v-else>执行任务{{taskName}}的时间为：</div><p class="text" v-html="parseInt(taskTime2)-parseInt(taskTime1)">ms</p></div>
+      <div v-if="taskTime1.length !== 0 && taskTime2.length !== 0 && this.progress===100"><div v-if="this.taskName==='asylo'">执行任务computeMatrix的时间为：</div><div v-else>执行任务{{taskName}}的时间为：</div><p class="text" style="font-size: 13px; line-height: 13px" v-html="parseInt(taskTime2)-parseInt(taskTime1)">ms</p></div>
       <div v-if="taskTime1.length === 0 || taskTime2.length === 0 || this.progress!==100"><span>暂无执行时间返回......</span></div>
       <br>
-      <div class="divcss5-a" v-if="taskResult.length !== 0 && this.progress===100"><div v-if="this.taskName==='asylo'">执行任务computeMatrix的结果为：</div><div v-else>执行任务{{taskName}}的结果为：</div><p class="text" style="font-size: 13px; line-height: 10px" v-html="taskResult"></p></div>
+      <div class="divcss5-a" v-if="taskResult.length !== 0 && this.progress===100"><div v-if="this.taskName==='asylo'">执行任务computeMatrix的结果为：</div><div v-else>执行任务{{taskName}}的结果为：</div><p class="text" style="font-size: 13px; line-height: 13px" v-html="taskResult"></p></div>
       <div v-if="taskResult.length === 0 || this.progress!==100"><span>暂无执行任务结果返回......</span></div>
       <br>
 

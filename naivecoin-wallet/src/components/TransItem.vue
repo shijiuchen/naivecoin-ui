@@ -17,7 +17,7 @@
 
         <div class="col-sm-6">
           <div class="txn-input truncate" v-for="txOut in txOuts">
-            <div class="break-word">
+            <div class="break-word txn-input truncate">
               <router-link :to="{ name: 'Address', params: {address: txOut.address}}">
                 <span>{{ txOut.address }}</span>
               </router-link>
@@ -26,10 +26,10 @@
             <br>
             锁定标志: {{txOut.LOCK}}
             <br>
-            <div v-if="txOut.codeHash === ''">
+            <div  class="txn-input truncate" v-if="txOut.codeHash === ''">
               锁定代码hash: 此交易无任务锁定
             </div>
-            <div v-else>
+            <div  class="txn-input truncate" v-else>
               锁定代码hash: {{txOut.codeHash}}
             </div>
           </div>
