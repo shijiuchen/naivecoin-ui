@@ -26,10 +26,10 @@
             <br>
             锁定标志: {{txOut.LOCK}}
             <br>
-            <div class="txn-input truncate" v-if="txOut.codeHash === ''">
+            <div class="truncate" v-if="txOut.codeHash === ''">
               锁定代码hash: 此交易无任务锁定
             </div>
-            <div class="txn-input truncate" v-else>
+            <div class="truncate" v-else>
               锁定代码hash: {{txOut.codeHash}}
             </div>
           </div>

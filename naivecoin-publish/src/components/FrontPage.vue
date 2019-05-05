@@ -160,12 +160,13 @@
     <br>
     <br>
     <h6>任务过程记录</h6>
-    <div style="background: whitesmoke;font-size: 13px">
-      <div v-if="preMoney.length !== 0 ">估算执行任务钱数:{{preMoney}}</div>
+    <div style="background: whitesmoke;font-size: 15px">
+      <div v-if="preMoney.length !== 0 ">估算执行任务钱数:<p class="text" style="font-size: 15px; color: #90111a" v-html="preMoney"></p></div>
       <div v-if="preMoney.length === 0 "><span>暂无任务进行花费估算......</span></div>
       <br>
-      <div class="divcss5-a" v-if="taskResult.length !== 0 && this.progress===100"><div v-if="this.TaskNamerun==='asylo'">执行任务computeMatrix的返回结果为：</div><div v-else>执行任务{{TaskNamerun}}的返回结果为：</div><p class="text" style="font-size: 13px; line-height: 13px" v-html="taskResult"></p></div>
+      <div class="divcss5-a" v-if="taskResult.length !== 0 && this.progress===100"><div v-if="this.TaskNamerun==='asylo'">执行任务computeMatrix的返回结果为：</div><div v-else>执行任务{{TaskNamerun}}的返回结果为：</div><p class="text" style="font-size: 15px; color: deepskyblue" v-html="taskResult"></p></div>
       <div v-if="taskResult.length === 0 || this.progress!==100"><span>暂无任务结果返回......</span></div>
+      <br>
     </div>
     <br>
     <br>
@@ -257,6 +258,8 @@
         this.getTransactionPool();
         this.getAlltasks();
         this.intervalTx=setInterval(this.getTransactionPool,2000);
+        this.interval1=setInterval(this.getpreMoney, 1000);
+        this.interval2=setInterval(this.getResult,1000);
       },
       getAddress: function () {
         this.$http.get('/api/address')
@@ -321,7 +324,7 @@
           .then(() => {
 //            this.init();
           });
-        this.timeTogetResults();
+      //  this.timeTogetResults();
         // this.play();
       },
       generateInteraction: function () {
@@ -359,9 +362,11 @@
           this.$http.get('/api/getMoney')
             .then((resp) => {
               this.preMoney = resp.data;
+              if(this.preMoney.length!=0){
+                this.play();
+              }
             });
           //clearInterval(this.interval1);
-          this.play();
         }
       },
       getResult: function () {
@@ -437,5 +442,5 @@
     position:absolute;
     left:30%;
   }
-  div.divcss5-a{ line-height:10px}/* css 注释说明：设置行距行高10px */
+  div.divcss5-a{ line-height:18px}/* css 注释说明：设置行距行高10px */
 </style>
